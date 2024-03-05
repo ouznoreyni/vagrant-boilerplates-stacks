@@ -140,16 +140,16 @@ EOF
 
 # Function to install Artifactory as a service
 install_artifactory_jrc_service() {
-    sudo $JFROG_HOME/$JCR_NAME/app/bin/installService.sh
+    sudo $JCR_HOME/$JCR_NAME/app/bin/installService.sh
     sleep 5
-    # Set permissions for the artifactory user on JFROG_HOME
-    sudo chown -R $USER:$GROUP "$JFROG_HOME"
+    # Set permissions for the artifactory user on JCR_HOME
+    sudo chown -R $USER:$GROUP "$JCR_HOME"
 
-    # Set ownership for specific directories (including /opt/jfrog/artifactory-oss-7.77.6/var)
-    sudo chown -R $USER:$GROUP $JFROG_HOME/$JCR_NAME/var
+    # Set ownership for specific directories (including /opt/jfrog/artifactory-jcr-7.77.6/var)
+    sudo chown -R $USER:$GROUP $JCR_HOME/$JCR_NAME/var
 
-    # Set permissions for the entire JFROG_HOME directory
-    sudo chmod -R 755 "$JFROG_HOME"
+    # Set permissions for the entire JCR_HOME directory
+    sudo chmod -R 755 "$JCR_HOME"
 
     # Start Artifactory
     sudo systemctl start artifactory.service
@@ -201,4 +201,4 @@ install_artifactory_jrc_service
 #restart service nginx
 sudo systemctl restart nginx
 
-echo "JFrog Container Registry has been successfully installed and configured with Nginx as a reverse proxy with SSL."
+echo "JFrog Artifactory has been successfully installed and configured with Nginx as a reverse proxy with SSL."
