@@ -4,7 +4,7 @@
 JCR_VERSION="7.77.6"
 JCR_TAR="jfrog-artifactory-jcr-${JCR_VERSION}-linux.tar.gz"
 JCR_NAME="artifactory-jcr-${JCR_VERSION}"
-JCR_HOME="/opt/artifactory_jrc"
+JCR_HOME="/opt/jfrog"
 DATABASE_URL="localhost:5432"
 DATABASE_USERNAME="artifactory_jrc"
 DATABASE_PASSWORD="noreyni"
@@ -13,7 +13,7 @@ GROUP="artifactory"
 SSL_DIR="/etc/ssl/private/"
 SSL_CERT="$SSL_DIR/artifactory_jrc.crt"
 SSL_KEY="$SSL_DIR/artifactory_jrc.key"
-SERVER_IP="192.168.56.20"
+SERVER_IP="192.168.56.21"
 
 # Function to detect the operating system
 detect_os() {
@@ -34,6 +34,7 @@ detect_os() {
 # Function to install required packages on CentOS
 install_centos() {
     sudo yum update -y
+    sudo yum clean metadata
     sudo yum install -y java-17-openjdk nginx
 }
 
@@ -139,13 +140,13 @@ EOF
 
 # Function to install Artifactory as a service
 install_artifactory_jrc_service() {
-    sudo $JFROG_HOME/$ARTIFACTORY_NAME/app/bin/installService.sh
+    sudo $JFROG_HOME/$JCR_NAME/app/bin/installService.sh
     sleep 5
     # Set permissions for the artifactory user on JFROG_HOME
     sudo chown -R $USER:$GROUP "$JFROG_HOME"
 
     # Set ownership for specific directories (including /opt/jfrog/artifactory-oss-7.77.6/var)
-    sudo chown -R $USER:$GROUP $JFROG_HOME/$ARTIFACTORY_NAME/var
+    sudo chown -R $USER:$GROUP $JFROG_HOME/$JCR_NAME/var
 
     # Set permissions for the entire JFROG_HOME directory
     sudo chmod -R 755 "$JFROG_HOME"
@@ -185,13 +186,13 @@ sudo tar -xzf "$JCR_TAR"
 sudo rm -rf $JCR_HOME/$JCR_TAR
 
 # Set the JFrog Home environment variable.
-echo 'export JFROG_HOME="/opt/artifactory_jrc"' | sudo tee -a /etc/environment
+echo 'export JFROG_HOME="/opt/jfrog"' | sudo tee -a /etc/environment
 
 # Customize the production configuration (optional) including database, Java Opts, and filestore.
 #
-if [ -f "artifactory_setup.sh" ]; then
-        source "artifactory_setup.sh" "artifactory"
-else
+# if [ -f "setup_postgresql.sh" ]; then
+#         source "setup_postgresql.sh" "jcr"
+# else
 # coming
 
 # Install Artifactory jrc service
@@ -200,4 +201,4 @@ install_artifactory_jrc_service
 #restart service nginx
 sudo systemctl restart nginx
 
-echo "JFrog Artifactory has been successfully installed and configured with Nginx as a reverse proxy with SSL."
+echo "JFrog Container Registry has been successfully installed and configured with Nginx as a reverse proxy with SSL."
