@@ -45,7 +45,7 @@ elif [ -f /etc/lsb-release ]; then
     PACKAGE_MANAGER="apt-get"
     NGINX_CONFIG_DIR="/etc/nginx/sites-available"
     NGINX_SERVICE="nginx"
-    NGINX_CONF_FILE="${NGINX_CONFIG_DIR}/jenkins"
+    NGINX_CONF_FILE="${NGINX_CONFIG_DIR}/jenkins.conf"
     JENKINS_SERVICE="jenkins"
 else
     echo "Unsupported operating system"
@@ -81,14 +81,14 @@ sudo tee $NGINX_CONF_FILE > /dev/null <<EOF
 server {
     listen 80;
     server_name 192.168.56.10;
-
-    location / {
-        proxy_pass http://localhost:8080;
-        proxy_set_header Host \$host;
-        proxy_set_header X-Real-IP \$remote_addr;
-        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto \$scheme;
-    }
+    return 301 https://$server_name$request_uri;
+    # location / {
+    #     proxy_pass http://localhost:8080;
+    #     proxy_set_header Host \$host;
+    #     proxy_set_header X-Real-IP \$remote_addr;
+    #     proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+    #     proxy_set_header X-Forwarded-Proto \$scheme;
+    # }
 }
 
 server {
@@ -116,8 +116,9 @@ sudo systemctl start $NGINX_SERVICE
 sudo tee -a $NGINX_CONF_FILE > /dev/null <<EOF
 server {
     listen 80;
-    server_name 192.168.56.10;
-    return 301 https://\$host\$request_uri;
+    #server_name 192.168.56.10;
+    server_name _;
+    return 301 https://$host$request_uri;
 }
 EOF
 

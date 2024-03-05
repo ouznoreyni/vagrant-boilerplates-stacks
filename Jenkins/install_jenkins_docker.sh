@@ -131,24 +131,26 @@ EOL
 cat <<EOL > nginx.conf
 server {
     listen 80;
-    server_name 192.168.56.10;
+    #server_name 192.168.56.10;
+    # Redirect HTTP to HTTPS
+    server_name _;
+    return 301 https://$server_name$request_uri;
+    # location / {
+    #     proxy_pass http://jenkins:8080;
+    #     proxy_set_header Host \$host;
+    #     proxy_set_header X-Real-IP \$remote_addr;
+    #     proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+    #     proxy_set_header X-Forwarded-Proto \$scheme;
+    # }
 
-    location / {
-        proxy_pass http://jenkins:8080;
-        proxy_set_header Host \$host;
-        proxy_set_header X-Real-IP \$remote_addr;
-        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto \$scheme;
-    }
-
-    location /portainer/ {
-        rewrite ^/portainer(/.*)$ \$1 break;
-        proxy_pass http://portainer:9000;
-        proxy_set_header Host \$host;
-        proxy_set_header X-Real-IP \$remote_addr;
-        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto \$scheme;
-    }
+    # location /portainer/ {
+    #     rewrite ^/portainer(/.*)$ \$1 break;
+    #     proxy_pass http://portainer:9000;
+    #     proxy_set_header Host \$host;
+    #     proxy_set_header X-Real-IP \$remote_addr;
+    #     proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+    #     proxy_set_header X-Forwarded-Proto \$scheme;
+    # }
 }
 
 server {
