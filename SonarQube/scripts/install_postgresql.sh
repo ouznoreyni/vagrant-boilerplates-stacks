@@ -38,6 +38,20 @@ create_postgresql_db_user() {
     execute_psql_commands "CREATE USER $db_user WITH PASSWORD '$db_password';"
     execute_psql_commands "CREATE DATABASE $db_name WITH OWNER=$db_user ENCODING='UTF8';"
     execute_psql_commands "GRANT ALL PRIVILEGES ON DATABASE $db_name TO $db_user;"
+
+    # Find the path to pg_hba.conf using psql
+    PG_HBA_CONF=$(execute_psql_commands "SHOW hba_file;")
+
+    # Check if the path is empty or null
+    if [ -z "$PG_HBA_CONF" ]; then
+        echo "Failed to retrieve the path to pg_hba.conf. Make sure psql is installed and accessible."
+        exit 1
+    fi
+
+    # Use sed to replace all occurrences of trust or peer with md5
+    sudo sed -i 's/\(trust\|peer\|ident\)/md5/g' $PG_HBA_CONF
+    sudo systemctl restart postgresql
+    echo "Updated $PG_HBA_CONF with md5 authentication."
 }
 
 # Install PostgreSQL based on the detected OS
