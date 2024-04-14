@@ -1,0 +1,68 @@
+# Define the base image for the VM
+base_image = "eurolinux-vagrant/centos-stream-9"
+# base_image = "ubuntu/jammy64"
+
+# Define memory, CPU, hostname, and IP for the VM
+memory_size = 2048
+cpu_count = 2
+controlplane = "kube_controlplane"
+worker = "kube_worker"
+
+# Define servers list and their parameters
+NODES = [
+  { hostname: "kubplan1", ip: "192.168.56.60", cpus: 4, mem: 2048, type: controlplane },
+  { hostname: "kubworker1", ip: "192.168.56.62", cpus: 2, mem: 2048, type: worker },
+  { hostname: "kubworker2", ip: "192.168.56.63", cpus: 2, mem: 2048, type: worker },
+  
+]
+
+etcHosts = ""
+
+NODES.each do |node|
+    etcHosts += "echo '#{node[:ip]} #{node[:hostname]}' >> /etc/hosts\n"
+end
+
+
+Vagrant.configure("2") do |config|
+  config.vm.box = base_image
+  config.vm.synced_folder ".", "/vagrant", disabled: false
+  # Set up SSH settings for passwordless SSH
+  config.ssh.insert_key = false
+
+  NODES.each do |node|
+    config.vm.define node[:hostname] do |node_config|
+      node_config.vm.hostname = node[:hostname]
+      node_config.vm.network "private_network", ip: node[:ip]
+
+      node_config.vm.provider "virtualbox" do |v|
+        v.customize ["modifyvm", :id, "--cpus", node[:cpus]]
+        v.customize ["modifyvm", :id, "--memory", node[:mem]]
+        v.customize ["modifyvm", :id, "--name", node[:hostname]]
+        v.customize ["modifyvm", :id, "--ioapic", "on"]
+        v.customize ["modifyvm", :id, "--nictype1", "virtio"]
+      end
+      
+
+      
+      node_config.vm.provision "file", source: "scripts", destination: "/tmp/scripts"
+      node_config.vm.provision "shell", path: "scripts/common.sh", args: (node[:type] == controlplane ? "true" : "false")
+
+      if node[:type] == controlplane
+        node_config.vm.provision "shell", path: "scripts/control_plane_provision.sh"
+      else node[:type] == worker
+        node_config.vm.provision "shell", path: "scripts/worker_provision.sh", args: "192.168.56.60"
+      end  # end condition
+
+      #for all
+      node_config.vm.provision "shell", inline: etcHosts
+      config.vm.provision "shell" do |s|
+        ssh_pub_key = File.readlines("#{Dir.home}/.ssh/id_rsa.pub").first.strip
+        s.inline = <<-SHELL
+          echo #{ssh_pub_key} >> /home/vagrant/.ssh/authorized_keys
+          echo #{ssh_pub_key} >> /root/.ssh/authorized_keys
+        SHELL
+      end
+
+    end # end config
+  end  # end nodes
+end
