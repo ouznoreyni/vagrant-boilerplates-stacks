@@ -12,7 +12,7 @@ worker = "kube_worker"
 NODES = [
   { hostname: "kubplan1", ip: "192.168.56.60", cpus: 4, mem: 2048, type: controlplane },
   { hostname: "kubworker1", ip: "192.168.56.62", cpus: 2, mem: 2048, type: worker },
-  { hostname: "kubworker2", ip: "192.168.56.63", cpus: 2, mem: 2048, type: worker },
+  # { hostname: "kubworker2", ip: "192.168.56.63", cpus: 2, mem: 2048, type: worker },
   
 ]
 
