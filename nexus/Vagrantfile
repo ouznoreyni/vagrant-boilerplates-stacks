@@ -1,0 +1,36 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# Define  the base image, memory, CPU, hostname, and IP for the VM
+base_image = "generic/centos8" 
+#base_image = "ubuntu/jammy64"
+memory_size = 3048                         
+cpu_count = 2 
+host_name = "nexus"
+ip_address = "192.168.56.30"
+
+Vagrant.configure("2") do |config|
+  # nexus server configuration
+  config.vm.synced_folder ".", "/vagrant"
+  
+  config.vm.define "nexus" do |nexus|
+    # Set VM properties
+    nexus.vm.box = base_image
+    nexus.vm.hostname = host_name
+    nexus.vm.network :private_network, ip: ip_address
+    nexus.vm.provider :virtualbox do |v|
+      v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+      v.customize ["modifyvm", :id, "--memory", memory_size]
+      v.customize ["modifyvm", :id, "--name", host_name]
+      v.customize ["modifyvm", :id, "--cpus", cpu_count]
+    end
+
+    
+    # Copy the 'scripts' folder to the VM during provisioning
+    
+    config.vm.provision "file", source: "../utils", destination: "/tmp"
+   
+    nexus.vm.provision "shell", path: "./scripts/main.sh", args: [ip_address]
+    
+  end
+end
