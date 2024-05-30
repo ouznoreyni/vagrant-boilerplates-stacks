@@ -99,6 +99,7 @@ LimitNPROC=8192
 WantedBy=multi-user.target
 EOT
 
+# create_systemd_service "sonarqube" "SonarQube service" "\$SONAR_HOME/\$SONAR_NAME/bin/linux-x86-64/sonar.sh start" "\$SONAR_HOME/\$SONAR_NAME/bin/linux-x86-64/sonar.sh stop" "sonarqube" "sonarqube" "131072" "8192"
 
 # Function to create SSL directory
 echo "Creating SSL directory..."

@@ -3,8 +3,8 @@
 
 # Vagrantfile for setting up a Jenkins server
 
-#base_image = "eurolinux-vagrant/centos-stream-9" 
-base_image = "ubuntu/jammy64"
+base_image = "eurolinux-vagrant/centos-stream-9" 
+#base_image = "ubuntu/jammy64"
 # Define memory, CPU, hostname, and IP for the VM
 memory_size = 2048                         
 cpu_count = 2 
@@ -29,6 +29,7 @@ Vagrant.configure("2") do |config|
     end
 
     # Pass IP address to the provisioner script
+    config.vm.provision "file", source: "../utils/", destination: "/tmp"
     jenkins.vm.provision "shell", path: "./scripts/main.sh", args: [ip_address]
   end
 end
