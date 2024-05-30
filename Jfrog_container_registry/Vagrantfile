@@ -7,7 +7,7 @@ base_image = "eurolinux-vagrant/centos-stream-9"
 memory_size = 2048                         
 cpu_count = 2 
 host_name = "jcr"
-ip_address = "192.168.56.21"
+ip_address = "192.168.56.22"
 
 Vagrant.configure("2") do |config|
   # jcr server configuration

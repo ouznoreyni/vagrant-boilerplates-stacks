@@ -25,6 +25,7 @@ UNIT="Software &Devops Engineer"
 SERVICE_CONFIG_FILE="jenkins.conf"
 PROXY_PASS_URL="http://localhost:8080"
 USER="vagrant"
+GROUP="vagrant"
 
 # Function to install and configure Jenkins
 install_configure_jenkins() {
@@ -63,13 +64,12 @@ install_configure_jenkins() {
 update_os
 
 # Run the SSL directory creation:
-create_ssl_directory "$SSL_DIR" "$USER"
+create_ssl_directory "$SSL_DIR" "$USER" "$GROUP"
 
 # Run the SSL certificate generation
 generate_ssl_certificates "$IP_ADDRESS" "$SSL_DIR" "$SSL_CERTIFICATE_PATH" "$SSL_KEY_PATH" "$STATE" "$ORGANIZATION" "$UNIT"
-sleep 2
+
 # Run the Nginx installation and configuration
-#setup_nginx_installation_configuration "$IP_ADDRESS" "$SSL_DIR" "$SSL_CERTIFICATE_PATH" "$SSL_KEY_PATH" "$SERVICE_CONFIG_FILE" "$PROXY_PASS_URL"
 setup_nginx_installation_configuration "$IP_ADDRESS" "$SSL_DIR" "$SSL_CERTIFICATE_PATH" "$SSL_KEY_PATH" "$SERVICE_CONFIG_FILE" "$PROXY_PASS_URL"
 sleep 2
 
