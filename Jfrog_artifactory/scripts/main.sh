@@ -67,8 +67,6 @@ setup_artifactory_service() {
 }
 
 
-OS=$(getOs)
-
 # update the operating system
 update_os
 
