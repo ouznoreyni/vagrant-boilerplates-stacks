@@ -7,7 +7,7 @@ base_image = "eurolinux-vagrant/centos-stream-9"
 memory_size = 2048                         
 cpu_count = 2 
 host_name = "sonarqube"
-ip_address = "192.168.56.22"
+ip_address = "192.168.56.30"
 
 Vagrant.configure("2") do |config|
   # sonarqube server configuration
@@ -26,11 +26,10 @@ Vagrant.configure("2") do |config|
     end
 
    
-    # Copy the 'scripts' folder to the VM during provisioning
-    config.vm.provision "file", source: "scripts", destination: "/tmp/scripts"
-
-    # Provisioning with a script  so add args docker to provsion
-    sonarqube.vm.provision "shell", path: "main.sh" , args: "bash"
+     
+    config.vm.provision "file", source: "../utils", destination: "/tmp"
+   
+    sonarqube.vm.provision "shell", path: "./scripts/main.sh", args: [ip_address]
     
   end
 end
