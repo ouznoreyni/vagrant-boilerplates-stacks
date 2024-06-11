@@ -1,13 +1,13 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 # Define the base image for the VM
-base_image = "eurolinux-vagrant/centos-stream-9" 
-#base_image = "ubuntu/jammy64"
+#base_image = "eurolinux-vagrant/centos-stream-9" 
+base_image = "ubuntu/jammy64"
 # Define memory, CPU, hostname, and IP for the VM
-memory_size = 2048                         
+memory_size = 4048                         
 cpu_count = 2 
 host_name = "jcr"
-ip_address = "192.168.56.21"
+ip_address = "192.168.56.22"
 
 Vagrant.configure("2") do |config|
   # jcr server configuration
@@ -25,12 +25,9 @@ Vagrant.configure("2") do |config|
       v.customize ["modifyvm", :id, "--cpus", cpu_count]
     end
 
-   
-    # Copy the 'scripts' folder to the VM during provisioning
-    config.vm.provision "file", source: "scripts", destination: "/tmp/scripts"
-
-    # Provisioning with a script  so add args docker to provsion
-    jcr.vm.provision "shell", path: "main.sh" , args: "code"
+    # Pass IP address to the provisioner script
+    config.vm.provision "file", source: "../utils/", destination: "/tmp"
+    jcr.vm.provision "shell", path: "./scripts/main.sh", args: [ip_address]
     
   end
 end

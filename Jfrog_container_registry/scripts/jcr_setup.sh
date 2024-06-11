@@ -178,15 +178,7 @@ case "$OS" in
         ;;
 esac
 
-# Create a JFrog Home directory and move the downloaded installer archive into that directory.
-sudo mkdir -p "$JCR_HOME"
-cd "$JCR_HOME"
-sudo wget "https://releases.jfrog.io/artifactory/bintray-artifactory/org/artifactory/jcr/jfrog-artifactory-jcr/$JCR_VERSION/$JCR_TAR" -O "$JCR_TAR"
-sudo tar -xzf "$JCR_TAR"
-sudo rm -rf $JCR_HOME/$JCR_TAR
 
-# Set the JFrog Home environment variable.
-echo 'export JFROG_HOME="/opt/jfrog"' | sudo tee -a /etc/environment
 
 # Customize the production configuration (optional) including database, Java Opts, and filestore.
 #

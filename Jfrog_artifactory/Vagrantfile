@@ -7,7 +7,7 @@ base_image = "eurolinux-vagrant/centos-stream-9"
 memory_size = 2048                         
 cpu_count = 2 
 host_name = "artifactory"
-ip_address = "192.168.56.20"
+ip_address = "192.168.56.21"
 
 Vagrant.configure("2") do |config|
   # artifactory server configuration
@@ -25,13 +25,9 @@ Vagrant.configure("2") do |config|
       v.customize ["modifyvm", :id, "--cpus", cpu_count]
     end
 
-    # Use rsync for syncing the 'scripts' folder
-    #config.vm.synced_folder ".", "/vagrant", type: "rsync", rsync__auto: true, rsync__exclude: [".vagrant/"]
-    # Copy the 'scripts' folder to the VM during provisioning
-    config.vm.provision "file", source: "scripts", destination: "/tmp/scripts"
-
-    # Provisioning with a script  so add args docker to provsion
-    artifactory.vm.provision "shell", path: "main_script.sh" , args: "code"
+     # Pass IP address to the provisioner script
+     config.vm.provision "file", source: "../utils/", destination: "/tmp"
+     artifactory.vm.provision "shell", path: "./scripts/main.sh", args: [ip_address]
     
   end
 end

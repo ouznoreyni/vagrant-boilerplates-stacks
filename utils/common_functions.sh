@@ -163,7 +163,7 @@ install_java() {
        ubuntu) 
 
            # Update package lists and Install Java 
-           sudo apt-get install -y update  openjdk-$java_version-jdk 
+           sudo apt-get install -y openjdk-$java_version-jdk 
            ;; 
        *) 
            error "Unsupported operating system." 
@@ -275,14 +275,16 @@ export -f setup_postgresql_user_and_db
 create_ssl_directory() { 
    local ssl_dir="$1" 
    local user="$2" 
+   local group="$2" 
 
    validate_non_empty "$ssl_dir" "SSL Directory" 
    validate_non_empty "$user" "User" 
+   validate_non_empty "$group" "Group" 
 
    if [ ! -d "$ssl_dir" ]; then 
        Info "Creating SSL directory..." 
        sudo mkdir -p "$ssl_dir" 
-       sudo chown -R "$user:$user" "$ssl_dir" 
+       sudo chown -R "$user:$group" "$ssl_dir" 
        sudo chmod 700 "$ssl_dir" 
        success "SSL directory created." 
    else 
@@ -374,7 +376,6 @@ EOF
    # Enable and start Nginx 
    sudo systemctl enable nginx 
    sudo systemctl start nginx 
-   sudo systemctl reload nginx 
 
    success "Nginx configured as a reverse proxy successfully." 
 } 
