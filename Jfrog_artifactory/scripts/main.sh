@@ -5,7 +5,7 @@
 #######################################
 
 # Source the utility functions
-script_utils_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+script_utils_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Source the utils functions
 source $script_utils_dir/common_functions.sh
@@ -32,9 +32,8 @@ PROXY_PASS_URL="http://127.0.0.1:8082/"
 USER="artifactory"
 GROUP="artifactory"
 
-
 setup_jfrog_home() {
-    Info "Setting up JFrog Home..."
+    info "Setting up JFrog Home..."
 
     sudo mkdir -p "$JFROG_HOME"
     cd "$JFROG_HOME"
@@ -66,7 +65,6 @@ setup_artifactory_service() {
 
 }
 
-
 # update the operating system
 update_os
 
@@ -90,7 +88,6 @@ generate_ssl_certificates "$IP_ADDRESS" "$SSL_DIR" "$SSL_CERTIFICATE_PATH" "$SSL
 setup_nginx_installation_configuration "$IP_ADDRESS" "$SSL_DIR" "$SSL_CERTIFICATE_PATH" "$SSL_KEY_PATH" "$SERVICE_CONFIG_FILE" "$PROXY_PASS_URL"
 
 sudo systemctl daemon-reload
-
 
 sudo systemctl restart artifactory
 success "JFrog Artifactory has been successfully installed and configured with Nginx as a reverse proxy with SSL."

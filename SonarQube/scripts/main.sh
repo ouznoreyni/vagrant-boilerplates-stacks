@@ -159,4 +159,4 @@ restart_services
 #enable_firewall
 # Log message to access SonarQube via IP
 success "the Username is: admin and the Password: admin"
-successWithUrlLink "ASonarQube can be accessed at " "https://$IP_ADDRESS"
+successWithUrlLink "SonarQube can be accessed at " "https://$IP_ADDRESS"
