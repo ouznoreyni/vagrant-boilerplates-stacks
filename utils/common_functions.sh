@@ -439,6 +439,8 @@ setup_nginx_installation_configuration() {
 
     # Configure Nginx
     configure_nginx "$ip_address" "$ssl_certificate_path" "$ssl_key_path" "$service_config_file" "$proxy_pass_url" "$nginx_config_dir"
+
+    sudo systemctl restart nginx
 }
 export -f setup_nginx_installation_configuration
 

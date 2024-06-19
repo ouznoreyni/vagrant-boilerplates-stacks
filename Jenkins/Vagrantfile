@@ -3,8 +3,8 @@
 
 # Vagrantfile for setting up a Jenkins server
 
-base_image = "eurolinux-vagrant/centos-stream-9" 
-#base_image = "ubuntu/jammy64"
+# base_image = "eurolinux-vagrant/centos-stream-9" 
+base_image = "ubuntu/jammy64"
 # Define memory, CPU, hostname, and IP for the VM
 memory_size = 2048                         
 cpu_count = 2 
